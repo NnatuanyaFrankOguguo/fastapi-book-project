@@ -278,7 +278,7 @@ pytest
 ---
 
 ## Author
-**Your Name**  
-GitHub: [your-username](https://github.com/your-username)
+**Frank Oguguo**  
+GitHub: [Nnatunayafrank](https://github.com/NnatunayaFrankOguguo)
 
 
