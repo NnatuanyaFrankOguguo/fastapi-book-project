@@ -279,6 +279,6 @@ pytest
 
 ## Author
 **Frank Oguguo**  
-GitHub: [Nnatunayafrank](https://github.com/NnatunayaFrankOguguo)
+GitHub: [NnatunayaFrankOguguo](https://github.com/NnatunayaFrankOguguo)
 
 
