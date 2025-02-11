@@ -145,7 +145,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, please open an issue in the GitHub repository.
 
-
 # FastAPI Book API
 
 This project is a FastAPI-based book management API. It provides endpoints to retrieve and manage books.
@@ -162,9 +161,7 @@ This project is a FastAPI-based book management API. It provides endpoints to re
 Ensure you have the following installed:
 - Python 3.10+
 - FastAPI
-- PostgreSQL (if using a database)
 - Git
-- Nginx (for deployment)
 
 ### Installation
 1. **Clone the Repository:**
@@ -180,19 +177,7 @@ Ensure you have the following installed:
    pip install -r requirements.txt
    ```
 
-3. **Set Up Environment Variables:**
-   Create a `.env` file and add necessary environment variables:
-   ```env
-   DATABASE_URL=postgresql://user:password@localhost/dbname
-   SECRET_KEY=your_secret_key
-   ```
-
-4. **Run Database Migrations (If Using SQLAlchemy Alembic):**
-   ```sh
-   alembic upgrade head
-   ```
-
-5. **Start the Development Server:**
+3. **Start the Development Server:**
    ```sh
    uvicorn main:app --reload
    ```
@@ -200,64 +185,44 @@ Ensure you have the following installed:
 
 ---
 
-## Deployment Instructions
-### 1. Configure Nginx
-- Create an Nginx configuration file for FastAPI:
-  ```nginx
-  server {
-      listen 80;
-      server_name your_domain_or_ip;
+## Deployment Instructions (Render)
+### 1. Push Your Code to GitHub
+Ensure your FastAPI project is on GitHub.
 
-      location / {
-          proxy_pass http://127.0.0.1:8000;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-      }
-  }
-  ```
-- Restart Nginx:
-  ```sh
-  sudo systemctl restart nginx
-  ```
+1. **Initialize Git (if not done yet):**
+   ```sh
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin https://github.com/your-username/your-repo.git
+   git push -u origin main
+   ```
 
-### 2. Set Up CI/CD
-#### **GitHub Actions for CI/CD**
-- Create a `.github/workflows/deploy.yml` file:
-  ```yaml
-  name: Deploy FastAPI App
+### 2. Deploy to Render
+1. **Go to [Render](https://render.com/) and log in.**
+2. Click **"New" → "Web Service"**.
+3. **Connect your GitHub repo** and select your FastAPI repository.
+4. **Configure the service:**
+   - **Build Command:**  
+     ```sh
+     pip install -r requirements.txt
+     ```
+   - **Start Command:**  
+     ```sh
+     uvicorn main:app --host 0.0.0.0 --port 10000
+     ```
+   - **Environment:**
+     - Choose **Python** as the runtime.
+     - Set **PORT** to `10000` (or the one Render assigns).
 
-  on:
-    push:
-      branches:
-        - main
-
-  jobs:
-    deploy:
-      runs-on: ubuntu-latest
-      steps:
-        - name: SSH into server and deploy
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.SERVER_IP }}
-            username: ${{ secrets.SERVER_USER }}
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
-            script: |
-              cd /path/to/your/project
-              git pull origin main
-              source venv/bin/activate
-              pip install -r requirements.txt
-              systemctl restart fastapi
-  ```
-- Store your SSH key as a GitHub secret under **Settings → Secrets and Variables → Actions**
-
-### 3. Running the Application on the Server
-- Start the FastAPI app:
-  ```sh
-  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  ```
-- Access the deployed API at `http://your_domain_or_ip/`
+### 3. Test Deployment
+1. Click **"Deploy"** and wait for Render to build your app.
+2. Once deployed, visit your **base URL** (e.g., `https://your-app-name.onrender.com`).
+3. Open the **API docs**:
+   ```
+   https://your-app-name.onrender.com/docs
+   ```
 
 ---
 
@@ -277,7 +242,8 @@ pytest
 
 ---
 
-## Author
+project [URL](https://fastapi-book-project-ykkz.onrender.com/docs#)
+
 **Frank Oguguo**  
 GitHub: [NnatunayaFrankOguguo](https://github.com/NnatunayaFrankOguguo)
 
