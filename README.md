@@ -144,3 +144,141 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For support, please open an issue in the GitHub repository.
+
+
+# FastAPI Book API
+
+This project is a FastAPI-based book management API. It provides endpoints to retrieve and manage books.
+
+## Features
+- Retrieve book details by ID
+- List all books
+- CI/CD pipeline for automated testing and deployment
+
+---
+
+## Setup Instructions
+### Prerequisites
+Ensure you have the following installed:
+- Python 3.10+
+- FastAPI
+- PostgreSQL (if using a database)
+- Git
+- Nginx (for deployment)
+
+### Installation
+1. **Clone the Repository:**
+   ```sh
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
+   ```
+
+2. **Create a Virtual Environment and Install Dependencies:**
+   ```sh
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   pip install -r requirements.txt
+   ```
+
+3. **Set Up Environment Variables:**
+   Create a `.env` file and add necessary environment variables:
+   ```env
+   DATABASE_URL=postgresql://user:password@localhost/dbname
+   SECRET_KEY=your_secret_key
+   ```
+
+4. **Run Database Migrations (If Using SQLAlchemy Alembic):**
+   ```sh
+   alembic upgrade head
+   ```
+
+5. **Start the Development Server:**
+   ```sh
+   uvicorn main:app --reload
+   ```
+   Access API docs at `http://127.0.0.1:8000/docs`
+
+---
+
+## Deployment Instructions
+### 1. Configure Nginx
+- Create an Nginx configuration file for FastAPI:
+  ```nginx
+  server {
+      listen 80;
+      server_name your_domain_or_ip;
+
+      location / {
+          proxy_pass http://127.0.0.1:8000;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+      }
+  }
+  ```
+- Restart Nginx:
+  ```sh
+  sudo systemctl restart nginx
+  ```
+
+### 2. Set Up CI/CD
+#### **GitHub Actions for CI/CD**
+- Create a `.github/workflows/deploy.yml` file:
+  ```yaml
+  name: Deploy FastAPI App
+
+  on:
+    push:
+      branches:
+        - main
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - name: SSH into server and deploy
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SERVER_IP }}
+            username: ${{ secrets.SERVER_USER }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            script: |
+              cd /path/to/your/project
+              git pull origin main
+              source venv/bin/activate
+              pip install -r requirements.txt
+              systemctl restart fastapi
+  ```
+- Store your SSH key as a GitHub secret under **Settings → Secrets and Variables → Actions**
+
+### 3. Running the Application on the Server
+- Start the FastAPI app:
+  ```sh
+  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  ```
+- Access the deployed API at `http://your_domain_or_ip/`
+
+---
+
+## Testing
+Run tests using:
+```sh
+pytest
+```
+
+---
+
+## API Endpoints
+| Method | Endpoint               | Description                |
+|--------|------------------------|----------------------------|
+| GET    | /api/v1/books/{book_id} | Get a book by its ID      |
+| GET    | /api/v1/books          | List all books            |
+
+---
+
+## Author
+**Your Name**  
+GitHub: [your-username](https://github.com/your-username)
+
+
