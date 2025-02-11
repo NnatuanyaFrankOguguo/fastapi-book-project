@@ -162,6 +162,7 @@ Ensure you have the following installed:
 - Python 3.10+
 - FastAPI
 - Git
+- Nginx (for deployment)
 
 ### Installation
 1. **Clone the Repository:**
@@ -185,7 +186,7 @@ Ensure you have the following installed:
 
 ---
 
-## Deployment Instructions (Render)
+## Deployment Instructions (Render + Nginx)
 ### 1. Push Your Code to GitHub
 Ensure your FastAPI project is on GitHub.
 
@@ -216,7 +217,41 @@ Ensure your FastAPI project is on GitHub.
      - Choose **Python** as the runtime.
      - Set **PORT** to `10000` (or the one Render assigns).
 
-### 3. Test Deployment
+### 3. Configure Nginx as a Reverse Proxy
+1. **Install Nginx (if not installed):**
+   ```sh
+   sudo apt update
+   sudo apt install nginx
+   ```
+2. **Create an Nginx configuration file:**
+   ```sh
+   sudo nano /etc/nginx/sites-available/fastapi
+   ```
+   Add the following configuration:
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+
+       location / {
+           proxy_pass http://127.0.0.1:10000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+   ```
+3. **Enable the configuration:**
+   ```sh
+   sudo ln -s /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled/
+   ```
+4. **Restart Nginx:**
+   ```sh
+   sudo systemctl restart nginx
+   ```
+
+### 4. Test Deployment
 1. Click **"Deploy"** and wait for Render to build your app.
 2. Once deployed, visit your **base URL** (e.g., `https://your-app-name.onrender.com`).
 3. Open the **API docs**:
@@ -231,7 +266,7 @@ Run tests using:
 ```sh
 pytest
 ```
-
+deployed project [URL](https://fastapi-book-project-ykkz.onrender.com/docs#)
 ---
 
 ## API Endpoints
@@ -242,9 +277,10 @@ pytest
 
 ---
 
-project [URL](https://fastapi-book-project-ykkz.onrender.com/docs#)
-
+## Author
 **Frank Oguguo**  
-GitHub: [NnatunayaFrankOguguo](https://github.com/NnatunayaFrankOguguo)
+GitHub: [NnatuanyaFrankOguguo](https://github.com/NnatuanyaFrankOguguo/))
+
+
 
 
