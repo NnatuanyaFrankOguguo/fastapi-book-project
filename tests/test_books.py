@@ -52,7 +52,3 @@ def test_delete_book():
     assert response.status_code == 404
 
 
-# def test_get_non_existent_book():
-#     response = client.get("/books/5")
-#     assert response.status_code == 404
-#     assert response.json() == {"detail": "Book not found"}
