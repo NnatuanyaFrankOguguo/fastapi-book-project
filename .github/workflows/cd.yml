@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: Deploy via SSH
 on: 
     push:
         branches: 
@@ -8,12 +8,22 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: SSH into server and deploy
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+
+            - name: Install dependencies
+              run: |
+                pip install -r requirements.txt
+            - name: Deploy using SSH
               uses: appleboy/ssh-action@master
               with:
                 host: ${{ secrets.SERVER_IP }}
                 username: ${{ secrets.SERVER_USER }}
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
+                port: 22
                 scripts: |
                     cd /mnt/c/fastapi-book-project
                     git pull origin main
