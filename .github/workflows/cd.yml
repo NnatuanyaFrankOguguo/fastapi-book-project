@@ -1,55 +1,42 @@
-# name: Deploy via SSH
-# on: 
-#     push:
-#         branches: 
-#             - main
-
-# jobs:
-#     deploy:
-#         runs-on: ubuntu-latest
-#         steps:
-#             - name: Checkout code
-#               uses: actions/checkout@v3
-
-#             - name: Set up Python
-#               uses: actions/setup-python@v4
-
-#             - name: Install dependencies
-#               run: |
-#                 pip install -r requirements.txt
-
-#             - name: Deploy using SSH
-#               uses: appleboy/ssh-action@master
-#               with:
-                # host: 
-#                 script: |
-#                     cd /mnt/c/fastapi-book-project
-#                     git pull origin main
-#                     source venv/bin/activate
-#                     pip install -r requirements.txt
-#                     systemctl restart fastapi  # ✅ Corrected from `systemct1`
-name: CD Pipeline - Deploy
+name: Deploy via SSH
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python Environment
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      - name: Install dependencies
+
+      - name: Install Dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-      - name: Deploy Application
-        run: |
-          # For example, SSH into your production server and run a deployment script.
-          # This is a placeholder command. Replace it with your actual deployment command.
-          ssh -o StrictHostKeyChecking=no user@your-production-server "cd /path/to/app && git pull && sudo systemctl restart fastapi_app"
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Change directory to your production project folder
+            cd /path/to/your/fastapi-book-project
+            # Pull the latest code from the main branch
+            git pull origin main
+            # Activate the virtual environment and update dependencies
+            source venv/bin/activate
+            pip install -r requirements.txt
+            # Restart the FastAPI service (ensure your systemd service name is correct)
+            sudo systemctl restart fastapi
