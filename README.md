@@ -114,7 +114,7 @@ Available genres:
 - Romance
 - Thriller
 
-## Running Tests
+## Running Test
 
 ```bash
 pytest
